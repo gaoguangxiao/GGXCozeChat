@@ -1,0 +1,6 @@
+framework module GGXCozeChat {
+  umbrella header "GGXCozeChat-umbrella.h"
+
+  export *
+  module * { export * }
+}
