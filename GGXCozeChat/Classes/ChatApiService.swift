@@ -7,25 +7,17 @@
 
 import Foundation
 import SmartCodable
-import GXSwiftNetwork
 import PTDebugView
 
-public struct ChatConfig {
-    static let botName = "机器人"
-    public static let bot_id = "7383946252129927176"
-    public static let botToken = "Bearer pat_OeGaGw1cAqmTuZduE5JoJVSJvSxJcBbOEY7DgtQApGFIJe2j2TYveqJspZxlm0wt"
-}
-
-class ChatGPTApi: MSBApi {
-    init(paras : Dictionary<String, Any>) {
-        super.init(url: "https://api.coze.com/open_api/v2/chat",
-                   path: "",
-                   method: .post,
-                   headers: ["Authorization":ChatConfig.botToken,
-                             "Accept":"text/event-stream"],
-                   parameters:paras)
-//                   sampleData: paras.toJsonString ?? "")
-    }
+public protocol ChatApiServiceProtocol: NSObjectProtocol {
+    
+    func onOpen()
+    
+    func onMessage(content: String, isFinish: Bool)
+    
+    func onComplete(content: String)
+    
+    func onCompleteError(msg: String)
 }
 
 public class ChatApiService {
@@ -34,16 +26,44 @@ public class ChatApiService {
         return ChatApiService()
     }()
     
+    //配置
+    var botURL: String?
+    
+    var botID: String?
+    
+    var botToken: String?
+    
     var conversationId: String?
     
     //
-    var chatHistorys: Array<GPTReplayMessage>?
+    var chatHistorys: Array<Any>?
+    
+    public weak var delegate: ChatApiServiceProtocol?
+
+    public init() {
         
-    public func initConversation(prologue: String) async -> String {
+    }
+    
+    public init(url: String,
+                 botId: String,
+                 token: String) {
+        botURL = url
+        botID = botId
+        botToken = token
+    }
+    
+    public func initConversation(prologue: String,
+                                 url: String,
+                                 botId: String,
+                                 token: String) async -> String {
         
         createConversation()
         
-        return await self.getRobotReply(text: prologue)
+        botURL = url
+        botID = botId
+        botToken = token
+        
+        return await self.getRobotReply(botURL: url, botId: botId, token: token, text: prologue)
     }
     
     public func createConversation() {
@@ -52,91 +72,122 @@ public class ChatApiService {
         
         chatHistorys = []
     }
+    
+    // 解析非流式数据
+    private func handReplay(problem: String, reply: GPTReplyModel?) -> String {
+        if reply?.code == 0 {
+            let message = reply?.messages?.filter({ $0.typeNum == .answer }).first
+            //                    print("回复：\(message)")
+            if let content = message?.content {
+                //保存聊天记录
+                var problemChat = GPTReplayMessage()
+                problemChat.content = problem
+                problemChat.role = "user"
+                if let dicProblemChat = problemChat.toDictionary() {
+                    self.chatHistorys?.append(dicProblemChat)
+                    ZKWLog.Log("user: \(dicProblemChat)")
+                }
+                //本次回答
+                var answerChat = GPTReplayMessage()
+                answerChat.content = content
+                answerChat.role = "assistant"
+                answerChat.type = "answer"
+                if let dicAnswerChat = answerChat.toDictionary() {
+                    self.chatHistorys?.append(dicAnswerChat)
+                    ZKWLog.Log("回复: \(dicAnswerChat)")
+                }
+                return content
+                //self.chatHistorys
+                //                continuation.resume(with: .success(content))
+            } else {
+                return "fail"
+                //                continuation.resume(with: .success("\(ChatConfig.botName) reply is fail"))
+            }
+        } else {
+            return "fail"
+        }
+    }
+    
+    func initEventSource(botURL: String,
+                         botId: String,
+                         token: String,
+                         text: String,
+                         stream: Bool = false,user: String = "user") -> EventSource? {
+        //保存本次历史记录
+        guard let serverURL = URL(string: botURL) else {
+            return nil
+        }
+        let dataRaw = [
+            "query": text,
+            "conversation_id": conversationId ?? "",
+            "user":user,
+            "stream":stream,
+            "bot_id":botId,
+            "chat_history":chatHistorys ?? []
+        ] as [String : Any]
+        
+        return EventSource(url: serverURL,
+                                  method: "POST",
+                                  headers: ["Authorization":token,
+                                            "Content-Type":"application/json"],
+                                  body: dataRaw.toJsonString ?? "")
+    }
 }
 
 //MARK: - 获取GPT回复
 public extension ChatApiService {
-      
-    func requestRobotReply(dataRaw: Dictionary<String, Any>) async -> GPTReplyModel? {
-        return await withUnsafeContinuation { continuation in
-            requestTextReply(dataRaw: dataRaw) { reply in
-                continuation.resume(with: .success(reply))
-            }
+    
+    enum ChatApiError: Error {
+        case ConfigError
+    }
+    
+    func requestRobotReply(text: String,
+                           stream: Bool = false,user: String = "user") throws {
+        guard let botURL, let botID , let botToken else {
+            print("请初始化配置")
+            throw ChatApiError.ConfigError
         }
-    }
-    
-    func requestStreamReply(text: String) async -> String {
-        return await getRobotReply(text: text, stream: true)
-    }
-    
-    func getRobotReply(text: String, stream: Bool) async -> String {
-        //保存本次历史记录
-        let dataRaw = [
-            "query": text,
-            "conversation_id": conversationId ?? "",
-            "user":ChatConfig.botName,
-            "stream":stream,
-            "bot_id":ChatConfig.bot_id,
-            "chat_history":chatHistorys?.toJSONString() ?? [:]
-        ] as [String : Any]
-        
-//        ZKWLog.Log("user 询问请求参数 \(dataRaw.toJsonString!)")
-        return await withUnsafeContinuation { continuation in
-            requestTextReply(dataRaw: dataRaw) { reply in
-                if reply?.code == 0 {
-                    let message = reply?.messages?.filter({ $0.typeNum == .answer }).first
-//                    print("回复：\(message)")
-                    if let content = message?.content {
-                        
-                        //保存聊天记录
-                        var problemChat = GPTReplayMessage()
-                        problemChat.content = text
-                        problemChat.role = "user"
-                        self.chatHistorys?.append(problemChat)
-                        if let dicProblemChat = problemChat.toJSONString(prettyPrint: true) {
-                            ZKWLog.Log("user: \(dicProblemChat)")
-                        }
-                        //本次回答
-                        var answerChat = GPTReplayMessage()
-                        answerChat.content = content
-                        answerChat.role = "assistant"
-                        answerChat.type = "answer"
-                        if let dicAnswerChat = answerChat.toJSONString(prettyPrint: true) {
-                            self.chatHistorys?.append(problemChat)
-                            ZKWLog.Log("\(ChatConfig.botName): \(dicAnswerChat)")
-                        }
-//                        self.chatHistorys
-                        continuation.resume(with: .success(content))
-                    } else {
-                        continuation.resume(with: .success("\(ChatConfig.botName) reply is fail"))
-                    }
-                } else {
-                    //调用是被
-                    continuation.resume(with: .success("\(ChatConfig.botName) reply is fail"))
-                }
+        initEventSource(botURL: botURL, botId: botID, token: botToken, text: text,stream: stream)?.onMessage({ id, event, data in
+            let reply = GPTReplyStreamModel.deserialize(from: data)
+            guard let message = reply?.message else { return  }
+            if message.typeNum == .answer {
+                self.delegate?.onMessage(content: message.content ?? "", isFinish: reply?.is_finish ?? false)
             }
-        }
+        }).onComplete({ code, b, error, data in
+            if let data {
+                let reply = GPTReplyModel.deserialize(from: data)
+                let content = self.handReplay(problem: text, reply: reply)
+                self.delegate?.onComplete(content: content)
+            }
+        }).onOpen {
+            self.delegate?.onOpen()
+        }.connect()
+
     }
     
+    //初始化是
     func getRobotReply(text: String) async -> String {
-        return await getRobotReply(text: text, stream: false)
-    }
-    
-    func requestTextReply(dataRaw: Dictionary<String, Any>,closure: @escaping ((GPTReplyModel?) -> ())) {
-        let api = ChatGPTApi(paras: dataRaw)
-        api.request { (result: GPTReplyModel?) in
-            closure(result)
-        } onFailure: { _ in
-            closure(nil)
+        
+        guard let botURL, let botID , let botToken else {
+            print("请初始化配置")
+            return ""
         }
+        return await getRobotReply(botURL: botURL, botId: botID, token: botToken, text: text)
     }
     
-    func requestStream(dataRaw: Dictionary<String, Any>,closure: @escaping ((GPTReplyModel?) -> ())) {
-        let api = ChatGPTApi(paras: dataRaw)
-        api.requestStream { (result: GPTReplyModel?) in
-            closure(result)
-        } onFailure: { _ in
-            closure(nil)
+    func getRobotReply(botURL: String,
+                       botId: String,
+                       token: String,
+                       text: String,
+                       stream: Bool = false,user: String = "user") async -> String {
+        return await withUnsafeContinuation { continuation in
+            initEventSource(botURL: botURL, botId: botId, token: token, text: text, stream:stream)?.onComplete({ code, b, error, data in
+                if let data {
+                    let reply = GPTReplyModel.deserialize(from: data)
+                    let content = self.handReplay(problem: text, reply: reply)
+                    continuation.resume(with: .success(content))
+                }
+            }).connect()
         }
     }
 }

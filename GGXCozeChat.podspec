@@ -7,8 +7,8 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'GGXCozeGPTChat'
-  s.version          = '0.1.3'
+  s.name             = 'GGXCozeChat'
+  s.version          = '0.1.4'
   s.summary          = '机器人聊天'
 
 # This description is used to generate tags and improve search results.
@@ -39,8 +39,7 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
-  s.dependency 'GXSwiftNetwork'
+#  s.dependency 'GXSwiftNetwork'
   s.dependency 'PTDebugView'
-  #s.dependency 'IKEventSource'
-
+  s.dependency 'SmartCodable'
 end

@@ -11,34 +11,52 @@ import GGXCozeChat
 
 struct SwiftUIChatGPTView: View {
     
-    @State var reply: String = ""
+    @State var noStreamReply: String = ""
+    
+//    @State var streamReply: String = ""
+    
+    @StateObject var viewModel = SwiftUIChatGPTViewModel()
     
     var problem = "红楼梦的作者是?"
     
     var body: some View {
         
-        Button(action: {
+        Form {
             
-//            let dataRaw = [
-//                "query":"今红楼梦的作者",
-//                "conversation_id":"10",
-//                "user":"纳威",
-//                "stream":1,
-//                "bot_id":ChatConfig.bot_id
-//            ]
-            
-            reply = ""
-            Task {
-//                reply =  await ChatApiService.share.getRobotReply(text: problem)
-                
-                reply = await ChatApiService.share.requestStreamReply(text: problem)
+            Button {
+//                Task{
+                     viewModel.initRobot()
+//                }
+            } label: {
+                Text("初始化")
             }
+
+            Button(action: {
+                Task {
+                    
+                    await viewModel.oldVersion()
+                }
+            }, label: {
+                Text("旧版问答:")
+            })
             
-        }, label: {
-            Text("问答:")
+            Button(action: {
+                viewModel.getRobotReply(stream: true)
+            }, label: {
+                Text("流式问答:")
+            })
+            
+            Button(action: {
+                viewModel.getRobotReply(stream: false)
+            }, label: {
+                Text("非流式问答:")
+            })
+            
+            Text("机器人回复：\(viewModel.replyContent)")
+        }
+        .onAppear(perform: {
+            viewModel.initRobot()
         })
-        
-        Text("机器人回复：\(reply)")
     }
 }
 
