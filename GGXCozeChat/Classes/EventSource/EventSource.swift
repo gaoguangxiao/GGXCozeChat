@@ -187,7 +187,7 @@ open class EventSource: NSObject, EventSourceProtocol, URLSessionDataDelegate {
                          didCompleteWithError error: Error?) {
         
         guard let responseStatusCode = (task.response as? HTTPURLResponse)?.statusCode else {
-            mainQueue.async { [weak self] in self?.onComplete?(nil, nil, error as NSError?, "") }
+            mainQueue.async { [weak self] in self?.onComplete?(nil, nil, error as NSError?, nil) }
             return
         }
         

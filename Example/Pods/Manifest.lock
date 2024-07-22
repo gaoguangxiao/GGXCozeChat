@@ -1,39 +1,65 @@
 PODS:
+  - Alamofire (5.9.1)
   - FBSnapshotTestCase (2.1.4):
     - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - GGXCozeChat (0.1.3):
+  - GGXCozeChat (0.1.4):
+    - GXSwiftNetwork
     - PTDebugView
     - SmartCodable
-  - GGXSwiftExtension (0.5.9)
-  - PTDebugView (0.1.7):
+  - GGXRSA (0.1.0)
+  - GGXSwiftExtension (0.6.2)
+  - GXSwiftNetwork (0.2.6):
+    - Moya
+    - PKHUD
+    - SmartCodable
+  - Moya (15.0.0):
+    - Moya/Core (= 15.0.0)
+  - Moya/Core (15.0.0):
+    - Alamofire (~> 5.0)
+  - PKHUD (5.3.0)
+  - PTDebugView (0.1.8):
     - GGXSwiftExtension
-  - SmartCodable (4.1.0)
+  - SmartCodable (4.1.1)
 
 DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
   - GGXCozeChat (from `../`)
+  - GGXRSA (from `~/Documents/GitHub/GGXRSA`)
+  - GGXSwiftExtension (from `~/Documents/GitHub/ggxswiftexten`)
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - FBSnapshotTestCase
-    - GGXSwiftExtension
+    - GXSwiftNetwork
+    - Moya
+    - PKHUD
     - PTDebugView
     - SmartCodable
 
 EXTERNAL SOURCES:
   GGXCozeChat:
     :path: "../"
+  GGXRSA:
+    :path: "~/Documents/GitHub/GGXRSA"
+  GGXSwiftExtension:
+    :path: "~/Documents/GitHub/ggxswiftexten"
 
 SPEC CHECKSUMS:
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  GGXCozeChat: b13ce0cf05c1e96b8a6ba0d7f64f94bf5768d6e1
-  GGXSwiftExtension: a070b544382d1d489313d2d2425da0f3eeb18e9c
-  PTDebugView: f820bcba8b30ba421016b45f31812c0fdbd731a7
-  SmartCodable: 04f61a30bd6567fc15b71e718e1aee4766956e55
+  GGXCozeChat: 5ce6a195a7d4c9adb62d8ac4860e77f587b968e9
+  GGXRSA: 1df02fc61e832d23fffe299d41d94edc4f4c1d08
+  GGXSwiftExtension: d775a0bb239693525f1d18d71c5aaac29d85ff02
+  GXSwiftNetwork: 1d61e3e5fdbfba9e8172d3c28c92ebf268739305
+  Moya: 138f0573e53411fb3dc17016add0b748dfbd78ee
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  PTDebugView: fcba2d292157f90bb3808d8c3bbfafdb42fada88
+  SmartCodable: 092fd8c698dc958fc95e1d93baf3b497f9ab1715
 
-PODFILE CHECKSUM: 36187c321bbd824a6a3e3b2d1f96c4fba83ad280
+PODFILE CHECKSUM: 8aebc00f8db49ada9c34b9713fb5f5e33fb4d80d
 
 COCOAPODS: 1.15.0

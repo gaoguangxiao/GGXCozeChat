@@ -25,11 +25,19 @@ import SmartCodable
      "seq_id": 1
  }
  **/
+
+typealias GPTSteamEventEnum = GPTReplyStreamModel.eventEnum
+
 public struct GPTReplyStreamModel: SmartCodable {
     
-    public var event: String?
+    public enum eventEnum: String, SmartCaseDefaultable {
+        case message
+        case done
+    }
     
-    public var message: GPTReplayMessage?
+    public var event: eventEnum?
+    
+    public var message: GPTMessageObject?
     
     public var is_finish: Bool = false
     
