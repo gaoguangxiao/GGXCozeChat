@@ -21,9 +21,6 @@
   "swift_versions": "5.0",
   "source_files": "GGXCozeChat/Classes/**/*",
   "dependencies": {
-    "GXSwiftNetwork": [
-
-    ],
     "PTDebugView": [
 
     ],

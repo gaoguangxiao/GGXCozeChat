@@ -8,7 +8,7 @@
 
 import UIKit
 import SwiftUI
-import GXSwiftNetwork
+//import GXSwiftNetwork
 import GGXCozeChat
 
 @available(iOS 14.0, *)
@@ -19,11 +19,11 @@ struct Lan: App {
         WindowGroup {
             SwiftUIChatGPTView()
                 .onAppear(perform: {
-                    MSBApiConfig.shared.setApiConfig(apiHost: CozeConfig.URL, 
-                                                     commonHeaders:  ["Authorization":Config.botToken,
-                                                                      "Content-Type":"application/json"],
-                                                     isAddDefaultHeaders: true)
-                    
+//                    MSBApiConfig.shared.setApiConfig(apiHost: CozeConfig.URL, 
+//                                                     commonHeaders:  ["Authorization":Config.botToken,
+//                                                                      "Content-Type":"application/json"],
+//                                                     isAddDefaultHeaders: true)
+//                    
                 })
         }
     }

@@ -54,7 +54,7 @@ public protocol EventSourceProtocol {
     /// following event source rules and finally the network layer error if any. All this information is more than
     /// enought for you to take a decition if you should reconnect or not.
     /// - Parameter onOpenCallback: callback
-    func onComplete(_ onComplete: @escaping ((Int?, Bool?, NSError?, String?) -> Void)) -> Self
+    func onComplete(_ onComplete: @escaping ((Int?, Bool?, Error?, String?) -> Void)) -> Self
     
     /// This callback is called everytime an event with name "message" or no name is received.
     func onMessage(_ onMessageCallback: @escaping ((_ id: String?, _ event: String?, _ data: String?) -> Void)) -> Self
@@ -85,7 +85,7 @@ open class EventSource: NSObject, EventSourceProtocol, URLSessionDataDelegate {
     private(set) public var readyState: EventSourceState
     
     private var onOpenCallback: (() -> Void)?
-    private var onComplete: ((Int?, Bool?, NSError?, String?) -> Void)?
+    private var onComplete: ((Int?, Bool?, Error?, String?) -> Void)?
     private var onMessageCallback: ((_ id: String?, _ event: String?, _ data: String?) -> Void)?
     private var eventListeners: [String: (_ id: String?, _ event: String?, _ data: String?) -> Void] = [:]
     
@@ -137,7 +137,7 @@ open class EventSource: NSObject, EventSourceProtocol, URLSessionDataDelegate {
         return self
     }
     
-    public func onComplete(_ onComplete: @escaping ((Int?, Bool?, NSError?, String?) -> Void)) -> Self{
+    public func onComplete(_ onComplete: @escaping ((Int?, Bool?, Error?, String?) -> Void)) -> Self{
         self.onComplete = onComplete
         return self
     }
@@ -187,7 +187,7 @@ open class EventSource: NSObject, EventSourceProtocol, URLSessionDataDelegate {
                          didCompleteWithError error: Error?) {
         
         guard let responseStatusCode = (task.response as? HTTPURLResponse)?.statusCode else {
-            mainQueue.async { [weak self] in self?.onComplete?(nil, nil, error as NSError?, nil) }
+            mainQueue.async { [weak self] in self?.onComplete?(nil, nil, error, nil) }
             return
         }
         

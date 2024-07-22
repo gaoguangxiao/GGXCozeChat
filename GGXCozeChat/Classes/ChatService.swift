@@ -32,7 +32,7 @@ public class ChatService {
     public weak var delegate: ChatServiceProtocol?
     
     //记录每次请求，对每次请求 随机一个数值，保存该次请求的处理流程
-    var requestConversationProgress: Dictionary<String, GPTRequestModel> = [:]
+    //    var requestConversationProgress: Dictionary<String, GPTRequestModel> = [:]
     var currentMsgID = UUID().uuidString
     
     var loopChatTimer: Timer?
@@ -119,20 +119,6 @@ public class ChatService {
         }
     }
     
-    func handV2Replay(reply: ReplyDetailBaseModel?) -> String {
-        if reply?.code == 0 {
-            let message = reply?.data?.filter({ $0.type == .answer }).first
-            //print("回复：\(message)")
-            if let content = message?.content {
-                return content
-            } else {
-                return "fail"
-            }
-        } else {
-            return "fail"
-        }
-    }
-    
     func initEventSource(botURL: String,
                          botId: String,
                          token: String,
@@ -159,61 +145,6 @@ public class ChatService {
                                      "Content-Type":"application/json"],
                            body: dataRaw.toJsonString ?? "")
     }
-    
-    /// 发送可失败请求模型
-    func sendConversationAllowFail(requestModel: GPTRequestModel) throws {
-        
-        guard let botURL, let botID , let botToken else {
-            throw ChatApiError.ConfigError
-        }
-        
-        initEventSource(botURL: botURL,
-                        botId: botID,
-                        token: botToken, 
-                        text: requestModel.content,
-                        chatHistory:requestModel.autoSaveHistory ? (chatHistorys ?? []) : [], 
-                        stream: requestModel.stream,
-                        user: requestModel.userID)?
-            .onComplete({ code, b, error, data in
-                if let error {
-                    self.resetConversationAllowFail(msgID: self.currentMsgID,error: error)
-                } else {
-                    if let data {
-                        guard let reply = GPTReplyModel.deserialize(from: data) else {
-                            self.delegate?.onCompleteError(msg: "回复`data`为空")
-                            return
-                        }
-                        let content = self.handReplay(problem: requestModel.content, reply: reply)
-                        self.delegate?.onComplete(content: content,rawReply: reply)
-                    }
-                }
-            }).onOpen {
-                self.delegate?.onOpen()
-            }.connect()
-    }
-    
-    func resetConversationAllowFail(msgID: String, error: NSError) {
-
-        //获取本次消息ID，请求实例，如果为空为新的请求
-        guard var chatModel = requestConversationProgress[msgID] else {
-            self.delegate?.onCompleteError(msg: "没有此对话-error")
-            return
-        }
-        
-        guard chatModel.failCount < repeatFailCount else {
-            requestConversationProgress.removeValue(forKey: currentMsgID)
-            self.delegate?.onCompleteError(msg: "重试\(chatModel.failCount)次，仍旧失败", event: "failed", error: error)
-            return
-        }
-        //2、发起请求
-        chatModel.failCount = chatModel.failCount + 1
-        //更新
-        requestConversationProgress.updateValue(chatModel, forKey: msgID)
-        //发起请求
-        LogInfo("即将重试：\(chatModel.failCount)次")
-        try? sendConversationAllowFail(requestModel: chatModel)
-    }
-
 }
 
 //MARK: - 获取GPT回复
@@ -260,45 +191,23 @@ public extension ChatService {
                 }
                 
             }).onComplete({ code, b, error, data in
-            
-                    if let data {
-                        guard let reply = GPTReplyModel.deserialize(from: data) else {
-                            self.delegate?.onCompleteError(msg: "回复`data`为空")
-                            return
-                        }
-                                            
-                        let content = self.handReplay(problem: text, reply: reply)
-                        self.delegate?.onComplete(content: content,rawReply: reply)
+                
+                if let data {
+                    guard let reply = GPTReplyModel.deserialize(from: data) else {
+                        self.delegate?.onCompleteError(msg: "回复`data`为空")
+                        return
                     }
+                    
+                    let content = self.handReplay(problem: text, reply: reply)
+                    self.delegate?.onComplete(content: content,rawReply: reply)
+                }
             }).onOpen {
                 self.delegate?.onOpen()
             }.connect()
         
     }
     
-    //具备单次请求失败可多次
-    func requestRobotReplyByRepeat(text: String,
-                           stream: Bool = false,
-                           isHistory: Bool = true,
-                           user: String? = nil) throws {
-        //新建消息ID
-        currentMsgID = String.randomString(length: 10)
-        //请求聊天模型
-        var reqModel = GPTRequestModel(content: text)
-        reqModel.userID = if let user { user } else { userName }
-        reqModel.stream = stream
-        reqModel.autoSaveHistory = isHistory
-        //保存本次请求内容
-        requestConversationProgress[currentMsgID] = reqModel
-        //发起请求
-        do {
-            try sendConversationAllowFail(requestModel: reqModel)
-        } catch let error {
-            throw error
-        }
-    }
-    
-    //初始化是
+    //初始化
     func getRobotReply(text: String) async -> String {
         
         guard let botURL, let botID , let botToken else {
@@ -306,6 +215,30 @@ public extension ChatService {
             return ""
         }
         return await getRobotReply(botURL: botURL, botId: botID, token: botToken, text: text)
+    }
+    
+    func getReply(text: String, isHistory: Bool = true) async throws -> String {
+        guard let botURL, let botID , let botToken else {
+            throw ChatApiError.ConfigError
+        }
+        return try await withUnsafeThrowingContinuation { continuation in
+            let userID = userName
+            initEventSource(botURL: botURL, botId: botID, token: botToken, text: text,chatHistory:isHistory ? (chatHistorys ?? []) : [], stream:false, user: userID)?
+                .onComplete({ code, b, error, data in
+                    if let error {
+                        //通过 continuation.resume(throwing:) 方法抛出异常。
+                        continuation.resume(throwing: error)
+                    } else {
+                        if let data {
+                            let reply = GPTReplyModel.deserialize(from: data)
+                            let content = self.handReplay(problem: text, reply: reply)
+                            //                            continuation.resume(with: .success(content))
+                            //通过`continuation.resume(returning:)`返回结果
+                            continuation.resume(returning: content)
+                        }
+                    }
+                }).connect()
+        }
     }
     
     func getRobotReply(botURL: String,
@@ -328,9 +261,6 @@ public extension ChatService {
         }
     }
     
-    
-    
-
 }
 
 
