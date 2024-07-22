@@ -17,20 +17,18 @@ DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
   - GGXCozeChat (from `../`)
   - GGXRSA
-  - GGXSwiftExtension (from `~/Documents/GitHub/ggxswiftexten`)
 
 SPEC REPOS:
   trunk:
     - FBSnapshotTestCase
     - GGXRSA
+    - GGXSwiftExtension
     - PTDebugView
     - SmartCodable
 
 EXTERNAL SOURCES:
   GGXCozeChat:
     :path: "../"
-  GGXSwiftExtension:
-    :path: "~/Documents/GitHub/ggxswiftexten"
 
 SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
@@ -40,6 +38,6 @@ SPEC CHECKSUMS:
   PTDebugView: fcba2d292157f90bb3808d8c3bbfafdb42fada88
   SmartCodable: 092fd8c698dc958fc95e1d93baf3b497f9ab1715
 
-PODFILE CHECKSUM: c6626fed42786a9f68a86201a5de15dc634cae3e
+PODFILE CHECKSUM: b202bc68f7c280651d4ba8875ace0df94db8ddc1
 
 COCOAPODS: 1.15.0
