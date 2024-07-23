@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'GGXCozeChat'
-  s.version          = '0.1.5'
-  s.summary          = 'feat:可异步获取回复'
+  s.version          = '0.1.6'
+  s.summary          = 'feat:增加清楚历史功能，不需要对聊天类置空'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?

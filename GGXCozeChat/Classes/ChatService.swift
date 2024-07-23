@@ -84,6 +84,11 @@ public class ChatService {
         return self.conversationId
     }
     
+    /// 清理之前聊天记录
+    public func clearHistory() {
+        chatHistorys = []
+    }
+    
     // 解析非流式数据
     private func handReplay(problem: String, reply: GPTReplyModel?) -> String {
         if reply?.code == 0 {
