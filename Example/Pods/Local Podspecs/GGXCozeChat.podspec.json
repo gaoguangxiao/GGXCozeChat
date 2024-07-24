@@ -1,7 +1,7 @@
 {
   "name": "GGXCozeChat",
-  "version": "0.1.4",
-  "summary": "机器人聊天",
+  "version": "0.1.7",
+  "summary": "feat:创建会话，可以设置`user`",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/gaoguangxiao125@sina.com/GGXCozeChat",
   "license": {
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/gaoguangxiao/GGXCozeChat.git",
-    "tag": "0.1.4"
+    "tag": "0.1.7"
   },
   "platforms": {
     "ios": "13.0"

@@ -4,7 +4,7 @@ PODS:
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - GGXCozeChat (0.1.4):
+  - GGXCozeChat (0.1.7):
     - PTDebugView
     - SmartCodable
   - GGXRSA (0.1.0)
@@ -32,7 +32,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  GGXCozeChat: 5ede835fa4a72ed3af8556c7b5eab1786b004a04
+  GGXCozeChat: fc37eb2e914c7d78e9af29444fa7088ccd46e679
   GGXRSA: d33cc5e8fc3d16e6d33be01b3eebb1a52ab67ac6
   GGXSwiftExtension: d775a0bb239693525f1d18d71c5aaac29d85ff02
   PTDebugView: fcba2d292157f90bb3808d8c3bbfafdb42fada88

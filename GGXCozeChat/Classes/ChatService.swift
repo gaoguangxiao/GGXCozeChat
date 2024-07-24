@@ -49,11 +49,11 @@ public class ChatService {
     public init(url: String,
                 botId: String,
                 token: String,
-                user: String = "user") {
+                user: String?) {
         botURL = url
         botID = botId
         botToken = token
-        userName = user
+        self.userName = if let user { user } else { "user" }
     }
     
     public func initConversation(prologue: String,
