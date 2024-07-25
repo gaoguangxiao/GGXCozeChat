@@ -179,14 +179,12 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GGXCozeChat/GGXCozeChat.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GGXRSA/GGXRSA.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GGXSwiftExtension/GGXSwiftExtension.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PTDebugView/PTDebugView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SmartCodable/SmartCodable.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GGXCozeChat/GGXCozeChat.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GGXRSA/GGXRSA.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GGXSwiftExtension/GGXSwiftExtension.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PTDebugView/PTDebugView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SmartCodable/SmartCodable.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then

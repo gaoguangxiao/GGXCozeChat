@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'GGXCozeChat'
-  s.version          = '0.1.8'
+  s.version          = '0.1.9'
   s.summary          = 'fix:内部报错，会抛出错误'
 
 # This description is used to generate tags and improve search results.
@@ -40,7 +40,7 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
-#  s.dependency 'GXSwiftNetwork'
-  s.dependency 'PTDebugView'
+  s.dependency 'GGXSwiftExtension'
+#  s.dependency 'PTDebugView'
   s.dependency 'SmartCodable'
 end

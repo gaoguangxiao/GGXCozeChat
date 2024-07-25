@@ -8,7 +8,6 @@
 
 import SwiftUI
 import GGXCozeChat
-import PTDebugView
 import GGXRSA
 
 class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
@@ -252,16 +251,16 @@ extension SwiftUIChatGPTViewModel: ChatServiceProtocol {
     
     @MainActor func onMessage(content: String, isFinish: Bool, event: String) {
         replyContent = replyContent + content
-        ZKTLog("replyContent: \(replyContent)")
+        print("replyContent: \(replyContent)")
     }
     
     func onMessage(stream: GPTReplyStreamModel) {
         
         //知识回忆
         //第一条消息
-        ZKLog(stream.message?.content)
+        print(stream.message?.content)
         
-        ZKTLog("stream: \(String(describing: stream.toJSONString() ?? ""))")
+        print("stream: \(String(describing: stream.toJSONString() ?? ""))")
     }
     
     @MainActor func onComplete(rawReply: GPTReplyModel) {
@@ -276,7 +275,7 @@ extension SwiftUIChatGPTViewModel: ChatServiceProtocol {
         }
         
         //        replyContent = rawReply.messages
-        ZKLog(rawReply)
+        print(rawReply)
     }
     
     @MainActor func onComplete(content: String) {

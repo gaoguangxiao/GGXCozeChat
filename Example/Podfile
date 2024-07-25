@@ -10,7 +10,7 @@ target 'GGXCozeChat_Example' do
   pod 'GGXRSA'
 #  , :path => '~/Documents/GitHub/GGXRSA'
 #  pod 'IKEventSource'
-  
+#  pod 'PTDebugView'
   target 'GGXCozeChat_Tests' do
     inherit! :search_paths
 

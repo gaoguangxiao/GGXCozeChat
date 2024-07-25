@@ -4,13 +4,11 @@ PODS:
   - FBSnapshotTestCase/Core (2.1.4)
   - FBSnapshotTestCase/SwiftSupport (2.1.4):
     - FBSnapshotTestCase/Core
-  - GGXCozeChat (0.1.7):
-    - PTDebugView
+  - GGXCozeChat (0.1.9):
+    - GGXSwiftExtension
     - SmartCodable
   - GGXRSA (0.1.1)
   - GGXSwiftExtension (0.6.4)
-  - PTDebugView (0.1.8):
-    - GGXSwiftExtension
   - SmartCodable (4.1.1)
 
 DEPENDENCIES:
@@ -23,7 +21,6 @@ SPEC REPOS:
     - FBSnapshotTestCase
     - GGXRSA
     - GGXSwiftExtension
-    - PTDebugView
     - SmartCodable
 
 EXTERNAL SOURCES:
@@ -32,12 +29,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  GGXCozeChat: fc37eb2e914c7d78e9af29444fa7088ccd46e679
+  GGXCozeChat: 7892de7195297dbe326df6c9643d28d10c6f42a7
   GGXRSA: 032e7fbdc1a6108e87e5da0be077bb519375e012
   GGXSwiftExtension: 6909d3717a0888980b6fac062973c0beecd08da2
-  PTDebugView: fcba2d292157f90bb3808d8c3bbfafdb42fada88
   SmartCodable: 092fd8c698dc958fc95e1d93baf3b497f9ab1715
 
-PODFILE CHECKSUM: b202bc68f7c280651d4ba8875ace0df94db8ddc1
+PODFILE CHECKSUM: 28ec9329afefbe1f19b8148f0fd48ed505e22882
 
 COCOAPODS: 1.15.0

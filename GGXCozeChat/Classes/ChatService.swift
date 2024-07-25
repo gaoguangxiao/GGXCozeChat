@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import PTDebugView
+//import PTDebugView
 import GGXSwiftExtension
 
 public class ChatService {
@@ -119,7 +119,7 @@ public class ChatService {
         problemChat.role = .user
         if let dicProblemChat = problemChat.toDictionary() {
             self.chatHistorys?.append(dicProblemChat)
-            ZKWLog.Log("user: \(dicProblemChat)")
+//            ZKWLog.Log("user: \(dicProblemChat)")
         }
         //本次回答
         var answerChat = GPTMessageObject()
@@ -128,41 +128,9 @@ public class ChatService {
         answerChat.type = .answer
         if let dicAnswerChat = answerChat.toDictionary() {
             self.chatHistorys?.append(dicAnswerChat)
-            ZKWLog.Log("回复: \(dicAnswerChat)")
+//            ZKWLog.Log("回复: \(dicAnswerChat)")
         }
         return content
-        
-        //        if reply.code == 0 {
-        //            let message = reply.messages?.filter({ $0.type == .answer }).first
-        //            //                    print("回复：\(message)")
-        //            if let content = message?.content {
-        //                //保存聊天记录
-        //                var problemChat = GPTMessageObject()
-        //                problemChat.content = problem
-        //                problemChat.role = .user
-        //                if let dicProblemChat = problemChat.toDictionary() {
-        //                    self.chatHistorys?.append(dicProblemChat)
-        //                    ZKWLog.Log("user: \(dicProblemChat)")
-        //                }
-        //                //本次回答
-        //                var answerChat = GPTMessageObject()
-        //                answerChat.content = content
-        //                answerChat.role = .assistant
-        //                answerChat.type = .answer
-        //                if let dicAnswerChat = answerChat.toDictionary() {
-        //                    self.chatHistorys?.append(dicAnswerChat)
-        //                    ZKWLog.Log("回复: \(dicAnswerChat)")
-        //                }
-        //                return content
-        //                //self.chatHistorys
-        //                //                continuation.resume(with: .success(content))
-        //            } else {
-        //                return "fail"
-        //                //                continuation.resume(with: .success("\(ChatConfig.botName) reply is fail"))
-        //            }
-        //        } else {
-        //            return "fail"
-        //        }
     }
     
     func initEventSource(botURL: String,

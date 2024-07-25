@@ -357,7 +357,6 @@
 				"${BUILT_PRODUCTS_DIR}/GGXCozeChat/GGXCozeChat.framework",
 				"${BUILT_PRODUCTS_DIR}/GGXRSA/GGXRSA.framework",
 				"${BUILT_PRODUCTS_DIR}/GGXSwiftExtension/GGXSwiftExtension.framework",
-				"${BUILT_PRODUCTS_DIR}/PTDebugView/PTDebugView.framework",
 				"${BUILT_PRODUCTS_DIR}/SmartCodable/SmartCodable.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -365,7 +364,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GGXCozeChat.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GGXRSA.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GGXSwiftExtension.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PTDebugView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SmartCodable.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
