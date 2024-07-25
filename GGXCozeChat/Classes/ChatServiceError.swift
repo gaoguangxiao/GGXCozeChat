@@ -7,10 +7,19 @@
 
 import Foundation
 
-enum ChatApiError: Error {
-    case ConfigError
-}
+public enum ChatServiceError: LocalizedError {
+    case configError
+    case dataStructError
+    case contentEmpty
 
-enum ChatServiceError: CustomNSError {    
-    case aiSyetemError
+    public var errorDescription: String? {
+        switch self {
+        case .dataStructError:
+            "无法解析响应数据"
+        case .contentEmpty:
+            "messages中content为空"
+        case .configError:
+            "初始化token、botid为空"
+        }
+    }
 }

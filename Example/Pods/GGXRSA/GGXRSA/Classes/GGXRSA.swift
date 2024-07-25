@@ -320,14 +320,14 @@ public struct GGXRSA {
     ///   - publicKeyPath: 公钥证书路径
     /// - Returns: 解密后String
     public static func decryptString(_ string: String, publicKeyPath: String) -> String? {
-        var data = base64_decode(string)
-        data = decryptData(data!, publicKeyPath: publicKeyPath)
-        if data == nil {
+        guard let data = base64_decode(string) else { return nil }
+        
+        guard let decryptData = decryptData(data, publicKeyPath: publicKeyPath) else {
             return nil
         }
-        return String.init(data: data!, encoding: String.Encoding.utf8)
+        
+        return String(data: decryptData, encoding: String.Encoding.utf8)
     }
-    
     
     //MARK: - OTHER
     

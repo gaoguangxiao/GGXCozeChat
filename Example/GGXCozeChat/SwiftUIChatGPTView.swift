@@ -24,7 +24,7 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
         guard let privatrFile = Bundle.main.path(forResource: "private_key.p12", ofType: nil) else{
             fatalError("private_key.p12 no exist")
         }
-
+        
         print("原始: \(Config.botToken)")
         let enco = GGXRSA.encryptString(Config.botToken, privateKeyPath: privatrFile)
         //        let enco = MZRSA.encryptString(Config.botToken, privateKey: Config.PRIVATE_KEY)
@@ -72,26 +72,24 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
     }
     
     func initRobot()  {
-        
-        
         var enco: String?
         ///加密
-//        if let encobase = loadPublicEncryptToken()?.encodBase64() {
-////            let encobase = encodBase64(str: enco1)
-//            print("加密转码：\(encobase)")
-//            //解码
-//            if let originalData = encobase.decodeBase64() {
-//                print("解码base64:\(originalData)")
-//                let rawToken = decryptPrivateStringToken(str: originalData)
-//                guard let rawToken  else {
-//                    print("rawToken获取失败")
-//                    return
-//                }
-//            }
-//        }
+        //        if let encobase = loadPublicEncryptToken()?.encodBase64() {
+        ////            let encobase = encodBase64(str: enco1)
+        //            print("加密转码：\(encobase)")
+        //            //解码
+        //            if let originalData = encobase.decodeBase64() {
+        //                print("解码base64:\(originalData)")
+        //                let rawToken = decryptPrivateStringToken(str: originalData)
+        //                guard let rawToken  else {
+        //                    print("rawToken获取失败")
+        //                    return
+        //                }
+        //            }
+        //        }
         
         
-        //其他地方生成编码base64的
+        //其他地方生成编码base64的∫
         if let encbase64 = loadEncryptToken1().encodBase64() {
             print("解码base64-local:\(encbase64)")
             enco = encbase64
@@ -111,7 +109,29 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
         }
         
         let rawBotID =  decryptPrivateStringToken(str: "S9cXhOFINF92vH9WnYjWTkPmlf9OTr5t12/82Bj1guNf/Xa4lHNt4kR0PA0osYkbORZmhIYw3RzOQM2tCfQwnqD3afF0flmDkKIS3/ACtessFkhvqBQzMmxcRjBnWeKlosBxS2UP/cr6VqQ8aQ8H6hGdWRjNo2SpKIlRfC+2vZZaL/lQe6jG7raItxbhlH2y9hOm/GPQj4h2djTTlV1+bsz6xS5JCqbpitQLuwxniIOaBHAaBD3Ga0C9U7GchOH/fvRXVg2v4RRQNYFl6iyr+8L8ZPRILVMHDfPx+KoCKijqXOk6oSWbMQhJGMIrXEj4qISxPOTuuJlM8h8XNAckPg==")
-        chatTool = ChatService(url: Config.botURL, botId: Config.botId, token: rawToken)
+        guard let rawBotID  else {
+            print("rawBotID获取失败")
+            return
+        }
+        initRobot(token: Config.botErrorToken, botId: rawBotID)
+    }
+    
+    /*
+     Error Domain=cozeChat Code=702242003 "(null)" UserInfo={msg=Do not have the corresponding permission, please refer to the corresponding API Token document and submit feedback if there is any problem}
+     */
+    func initErrorRobotWithToken() {
+        initRobot(token: Config.botErrorToken, botId: Config.botId)
+    }
+    
+    /*
+     Error Domain=cozeChat Code=702242002 "(null)" UserInfo={msg=The Bot is not currently published to the corresponding platform
+     **/
+    func initErrorRobotWithBotID() {
+        initRobot(token: Config.botToken, botId: Config.botErrorId)
+    }
+    
+    func initRobot(token: String, botId: String) {
+        chatTool = ChatService(url: Config.botURL, botId: botId, token: token, user: nil)
         chatTool?.delegate = self
         chatTool?.createConversation()
     }
@@ -122,36 +142,35 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
     
     @MainActor func oldVersionReply() {
         Task {
-            if let content = await chatTool?.getRobotReply(text: problem) {
-                replyContent = content
+            if let content = try? await chatTool?.getRobotReply(text: problem) {
+                replyContent = content ?? "error----"
             }
         }
     }
     
     @MainActor func getRobotReply(stream: Bool) {
         
-        replyContent = ""
-        do {
-            try chatTool?.requestRobotReply(text: problem,stream: stream)
-        } catch let e {
-            print(e)
-        }
-    }
-    
-    @MainActor func robotReplyRetry(stream: Bool) {
-        
         guard let chatTool else {
             print("初始化Ai机器人")
             return
         }
         
-        //            do {
-        //                let reply = try await chatTool.getReply(text: problem)
-        //                print("回复结果:\(reply)")
-        //                replyContent = reply
-        //            } catch let e {
-        //                print("调用失败:\(e)")
-        //            }
+        replyContent = ""
+        Task {
+            do {
+                replyContent = try await chatTool.getReply(text: self.problem)
+            } catch let e {
+                
+                print(e)
+            }
+        }
+    }
+    
+    @MainActor func robotReplyRetry(stream: Bool) {
+        guard let chatTool else {
+            print("初始化Ai机器人")
+            return
+        }
         
         //调用多次
         print("可调用多次")
@@ -172,14 +191,51 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
                 replyContent = failure.localizedDescription
             }
         }
+//        }
+        print("调用`Task`之后")
+    }
+    
+    @MainActor func retryCondition() {
+        guard let chatTool else {
+            print("初始化Ai机器人")
+            return
+        }
+        
+        //调用多次
+        print("可调用多次")
+        replyContent = ""
+        Task {
+            let result = await Task.retrying { error in
+                if let e = error as? ChatServiceError {
+                    return switch e {
+                    case .configError:true
+                    default: false
+                    }
+                }
+                return true
+            } operation: {
+                try await chatTool.getReply(text: self.problem)
+            }.result
+
+            switch result {
+            case .success(let success):replyContent = success
+            case .failure(let failure):
+                if let urlError = failure as? URLError {
+                    print("\(urlError.errorCode)")
+                }
+                print("\(failure)")
+                replyContent = failure.localizedDescription
+            }
+        }
+//        }
         print("调用`Task`之后")
     }
 }
 
 extension SwiftUIChatGPTViewModel: ChatServiceProtocol {
-    func onCompleteError(msg: String, event: String, error: NSError) {
+    func onCompleteError(error: any Error) {
         
-        print("msg: \(msg)。event:\(event)、code\(error.code)、er:\(error.localizedDescription)")
+        print("er:\(error.localizedDescription)")
     }
     
     func onMessage(content: String, event: String) {
@@ -254,6 +310,18 @@ struct SwiftUIChatGPTView: View {
                 }
                 
                 Button {
+                    viewModel.initErrorRobotWithToken()
+                } label: {
+                    Text("初始化错误的Token")
+                }
+                
+                Button {
+                    viewModel.initErrorRobotWithBotID()
+                } label: {
+                    Text("初始化错误的BotID")
+                }
+                
+                Button {
                     viewModel.stopRobot()
                 } label: {
                     Text("结束")
@@ -285,6 +353,13 @@ struct SwiftUIChatGPTView: View {
             }, label: {
                 Text("非流式问答允许，失败后多次请求")
             })
+            
+            Button(action: {
+                viewModel.retryCondition()
+            }, label: {
+                Text("非流式问答允许，失败多次请求-重试有条件")
+            })
+            
             Text("机器人回复：\(viewModel.replyContent)")
         }
         .onAppear(perform: {

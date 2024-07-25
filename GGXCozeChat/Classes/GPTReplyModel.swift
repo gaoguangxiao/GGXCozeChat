@@ -10,7 +10,9 @@ import SmartCodable
 
 // MARK: - GPTReplyModel
 public struct GPTReplyModel: SmartCodable {
-    public var code: Int?
+    /// 0为成功，其他msg会有提示，默认-1
+    public var code: Int = -1
+    
     /// 标识对话发生在哪一次会话中，使用方自行维护此字段。
     public var conversation_id: String?
     public var messages: [GPTMessageObject]?

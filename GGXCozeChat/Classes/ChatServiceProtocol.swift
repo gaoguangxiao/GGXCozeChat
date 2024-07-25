@@ -28,10 +28,9 @@ public protocol ChatServiceProtocol: NSObjectProtocol {
     func onComplete(content: String, rawReply: GPTReplyModel)
     
     /// 有异常抛出
-    func onCompleteError(msg: String)
-    
+//    func onCompleteError(msg: String)
     ///
-    func onCompleteError(msg: String, event: String ,error: NSError)
+    func onCompleteError(error: Error)
 }
 
 extension ChatServiceProtocol {
