@@ -21,12 +21,8 @@
   "swift_versions": "5.0",
   "source_files": "GGXCozeChat/Classes/**/*",
   "dependencies": {
-    "GGXSwiftExtension": [
-
-    ],
-    "SmartCodable": [
-
-    ]
+    "GGXSwiftExtension": [],
+    "SmartCodable": []
   },
   "swift_version": "5.0"
 }

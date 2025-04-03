@@ -89,6 +89,12 @@ public class ChatService {
         return self.conversationId
     }
     
+    
+    //创建音频聊天房间
+    public func createAudioHome() {
+        
+    }
+
     /// 清理之前聊天记录
     public func clearHistory() {
         chatHistorys = []

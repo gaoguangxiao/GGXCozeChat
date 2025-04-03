@@ -89,30 +89,30 @@ class SwiftUIChatGPTViewModel: NSObject, ObservableObject {
         
         
         //其他地方生成编码base64的∫
-        if let encbase64 = loadEncryptToken1().encodBase64() {
-            print("解码base64-local:\(encbase64)")
-            enco = encbase64
-        }
-        
-        //解码base64
-        guard let enco else {
-            print("解码base64-失败")
-            return
-        }
+//        if let encbase64 = loadEncryptToken1().encodBase64() {
+//            print("解码base64-local:\(encbase64)")
+//            enco = encbase64
+//        }
+//        
+//        //解码base64
+//        guard let enco else {
+//            print("解码base64-失败")
+//            return
+//        }
         
         //解密
-        let rawToken = decryptPrivateStringToken(str: "nezKlPItbT6vKN1sb0BAkancHAFfRLZAMhr3J2+Bo2PAUcZcFjH6MuIsvyP+V7D4yRc88aKepR4jni/sYsji0FLL9zyN2amNwiBgBiakIXHhq27kkMmkl7t+pX5Sp+nH1xKJvhn2DAvdHAY4w26Fdwh3Gcms/ZH74OGe8ctmCjmLfxbNMwl7JmHNEWk2O0hE5UnftWQkYYLpxdPfsR2y6MiHaAhP/+avd6v+oBzy4aNpr7pF83tl032GMI3GkulSy+RoqPnNjzEU3QCdPW3vzK6WfCzWyI3jPPCrzyWLawpePUQgc9QhCxOZEhIqJEP7n0OZOapUxRFkoSDsEdd3HA==")
+        let rawToken = decryptPrivateStringToken(str: "unZ2cHQk/qFm1dsViq7aRrPJADuXZXCJpR8lcUdygb2Kdfr6iuCBetYcmm6mAVVXU/lnV/XTdbTqtZOf5SBU+KQUiSVVdANchtpn4aBfS1EdYSYs2myN3L07dappTLuPPSDnCseCUbNkMSmszAGWbXbfMyJGgsNSbaqEBMnk2yoVpcSvrXGPguftPIgoQt+CRQ9/unS/JsI+9j7Q93enOtW3jT0QT9bP+0LF1cqfFU976NyP3FneuCYjQ5D5fGdQ4EDs8dLBkMluf4T/6nv52FYtSG5ehzN4zAIcToGf8cWqIcvOSC11vfHxcWsIbNTWR83jcYvnXiGdJSaxVTD40g==")
         guard let rawToken  else {
             print("rawToken获取失败")
             return
         }
-        
-        let rawBotID =  decryptPrivateStringToken(str: "S9cXhOFINF92vH9WnYjWTkPmlf9OTr5t12/82Bj1guNf/Xa4lHNt4kR0PA0osYkbORZmhIYw3RzOQM2tCfQwnqD3afF0flmDkKIS3/ACtessFkhvqBQzMmxcRjBnWeKlosBxS2UP/cr6VqQ8aQ8H6hGdWRjNo2SpKIlRfC+2vZZaL/lQe6jG7raItxbhlH2y9hOm/GPQj4h2djTTlV1+bsz6xS5JCqbpitQLuwxniIOaBHAaBD3Ga0C9U7GchOH/fvRXVg2v4RRQNYFl6iyr+8L8ZPRILVMHDfPx+KoCKijqXOk6oSWbMQhJGMIrXEj4qISxPOTuuJlM8h8XNAckPg==")
-        guard let rawBotID  else {
-            print("rawBotID获取失败")
-            return
-        }
-        initRobot(token: Config.botErrorToken, botId: rawBotID)
+//        
+//        let rawBotID =  decryptPrivateStringToken(str: "S9cXhOFINF92vH9WnYjWTkPmlf9OTr5t12/82Bj1guNf/Xa4lHNt4kR0PA0osYkbORZmhIYw3RzOQM2tCfQwnqD3afF0flmDkKIS3/ACtessFkhvqBQzMmxcRjBnWeKlosBxS2UP/cr6VqQ8aQ8H6hGdWRjNo2SpKIlRfC+2vZZaL/lQe6jG7raItxbhlH2y9hOm/GPQj4h2djTTlV1+bsz6xS5JCqbpitQLuwxniIOaBHAaBD3Ga0C9U7GchOH/fvRXVg2v4RRQNYFl6iyr+8L8ZPRILVMHDfPx+KoCKijqXOk6oSWbMQhJGMIrXEj4qISxPOTuuJlM8h8XNAckPg==")
+//        guard let rawBotID  else {
+//            print("rawBotID获取失败")
+//            return
+//        }
+        initRobot(token: rawToken, botId: Config.botId)
     }
     
     /*

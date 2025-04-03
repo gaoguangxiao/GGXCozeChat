@@ -1,9 +1,4 @@
 PODS:
-  - FBSnapshotTestCase (2.1.4):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
-  - FBSnapshotTestCase/Core (2.1.4)
-  - FBSnapshotTestCase/SwiftSupport (2.1.4):
-    - FBSnapshotTestCase/Core
   - GGXCozeChat (0.1.9):
     - GGXSwiftExtension
     - SmartCodable
@@ -12,13 +7,11 @@ PODS:
   - SmartCodable (4.1.1)
 
 DEPENDENCIES:
-  - FBSnapshotTestCase (~> 2.1.4)
   - GGXCozeChat (from `../`)
   - GGXRSA
 
 SPEC REPOS:
   trunk:
-    - FBSnapshotTestCase
     - GGXRSA
     - GGXSwiftExtension
     - SmartCodable
@@ -28,12 +21,11 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  GGXCozeChat: 7892de7195297dbe326df6c9643d28d10c6f42a7
+  GGXCozeChat: 28ff26416d272817f10d1a97cabe438828b587cb
   GGXRSA: 032e7fbdc1a6108e87e5da0be077bb519375e012
   GGXSwiftExtension: 6909d3717a0888980b6fac062973c0beecd08da2
   SmartCodable: 092fd8c698dc958fc95e1d93baf3b497f9ab1715
 
-PODFILE CHECKSUM: 28ec9329afefbe1f19b8148f0fd48ed505e22882
+PODFILE CHECKSUM: 564a0285426206007574d9e074fee129f05155f5
 
-COCOAPODS: 1.15.0
+COCOAPODS: 1.16.2
